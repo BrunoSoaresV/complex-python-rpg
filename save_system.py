@@ -1,21 +1,20 @@
 import json
+from pathlib import Path
+
 
 class SaveSystem:
-    def save_game(self, player, world):
-        data = {
-            'player': {
-                'position': (player.rect.x, player.rect.y),
-                'stats': player.stats,
-                'inventory': [item.name for item in player.inventory]
-            },
-            'world_seed': world.seed
+    def __init__(self, save_path: str = "save.json") -> None:
+        self.path = Path(save_path)
+
+    def save_game(self, player, world, quest_system) -> None:  # noqa: ANN001 - runtime types
+        payload = {
+            "player": player.to_dict(),
+            "world": world.to_dict(),
+            "quests": quest_system.to_dict(),
         }
-        with open('save.json', 'w') as f:
-            json.dump(data, f)
+        self.path.write_text(json.dumps(payload, indent=2))
 
     def load_game(self):
-        try:
-            with open('save.json') as f:
-                return json.load(f)
-        except FileNotFoundError:
+        if not self.path.exists():
             return None
+        return json.loads(self.path.read_text())

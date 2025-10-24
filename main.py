@@ -1,45 +1,34 @@
-# Main game loop and initialization
-import pygame
-from game_state import GameState
-from player import Player
-from world import World
+"""Entry point for the RPG."""
 
-def main():
+import pygame
+
+from game_state import GameState
+
+
+def main() -> None:
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
-    pygame.display.set_caption('Python RPG')
-    
-    game_state = GameState()
-    player = Player()
-    world = World()
-    
+    pygame.display.set_caption("Python RPG")
+    clock = pygame.time.Clock()
+
+    game_state = GameState(screen)
+
     running = True
     while running:
-        # Handle events
+        delta_time = clock.tick(60) / 1000.0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
-            # Handle player input
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    player.move('up')
-                elif event.key == pygame.K_DOWN:
-                    player.move('down')
-                elif event.key == pygame.K_LEFT:
-                    player.move('left')
-                elif event.key == pygame.K_RIGHT:
-                    player.move('right')
-        
-        # Update game state
-        world.update()
-        player.update()
-        
-        # Render
+            else:
+                game_state.handle_event(event)
+
+        game_state.update(delta_time)
         screen.fill((0, 0, 0))
-        world.draw(screen)
-        player.draw(screen)
+        game_state.draw()
         pygame.display.flip()
 
-if __name__ == '__main__':
+    pygame.quit()
+
+
+if __name__ == "__main__":
     main()
