@@ -1,11 +1,9 @@
-# NPC interaction system
-class NPC:
-    def __init__(self, name, dialogue, quests):
-        self.name = name
-        self.dialogue = dialogue
-        self.quests = quests
+from dialogue import DialogueTree, DialogueNode
 
-    def interact(self, player):
-        print(f"{self.name}: {self.dialogue}")
-        if self.quests:
-            player.quest_system.add_quest(self.quests[0])
+class NPC:
+    def __init__(self, name, dialogue_tree):
+        self.name = name
+        self.dialogue_tree = dialogue_tree
+
+    def start_dialogue(self):
+        return self.dialogue_tree
